@@ -11,6 +11,7 @@ function App() {
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(list));
   }, [list]);
+  const[filter,setFilter] = useState("all");
   const [editIndex, setEditIndex] = useState(null);
   const [editText, setEditText] = useState("");
   const handleSubmit = (event) => {
@@ -56,6 +57,13 @@ function App() {
     setEditText(list[index].task);
   };
   const saveTask = (index) => {
+    const alreadyExists = list.some(
+      (item, i) => i !== index && item.task === editText
+    );
+    if(alreadyExists){
+      alert("Task Already Exists")
+      return
+    }
     const updatedList = list.map((item, i) => {
       if (i === index) {
         return {
@@ -70,6 +78,17 @@ function App() {
     setEditIndex(null);
     setEditText("");
   };
+  const Complete = () =>{
+    if(filter === "Completed"){
+      return (item.status == false)
+    }
+    if(filter === "Pending"){
+      return ({item.status} == false)
+    }
+    if(filter === "all"){
+        return ({item.status} == false)
+    }
+  }
   return (
     <>
       <h1>ToDo APP</h1>
@@ -77,6 +96,7 @@ function App() {
         <input name="app" type="text" placeholder="Enter your Task" />
         <button>Save</button>
       </form>
+      <button onClick={() => {Complete}}>Completed</button>
       <h1>
         CompletedTask : {completedTask()} / {totalTask()}
       </h1>
